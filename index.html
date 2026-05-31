@@ -226,7 +226,7 @@
         pointer-events: none;
     }
 
-    /* Controles - reposicionados para não ficar atrás dos botões sociais */
+    /* Controles - lado esquerdo inferior */
     .controls {
         position: fixed;
         bottom: 28px;
@@ -272,7 +272,7 @@
         padding: 8px 22px;
     }
 
-    /* Botões redes sociais - lado direito */
+    /* Botões redes sociais - lado direito inferior */
     .social-buttons {
         position: fixed;
         bottom: 28px;
@@ -439,28 +439,25 @@
         transform: scale(1.05);
     }
 
+    /* ========== MOBILE - FOTOS E BOTÕES MAIS PARA CIMA ========== */
     @media (max-width: 768px) {
-        .book-container { width: 90vw; perspective: 1200px; }
-        .page { width: 100%; left: 0; transform-origin: left center; }
+        .book-container { 
+            width: 90vw; 
+            height: 68vh; /* Menor altura para subir as fotos */
+            margin-top: 5vh; /* Espaço extra em cima */
+            perspective: 1200px; 
+        }
+        .page { 
+            width: 100%; 
+            left: 0; 
+            transform-origin: left center; 
+        }
         .page-right { display: none; }
         .book::before { display: none; }
         
-        /* Botões sociais no mobile */
-        .social-buttons { 
-            bottom: 28px; 
-            right: 16px; 
-            gap: 10px; 
-        }
-        .social-btn { 
-            padding: 10px; 
-            gap: 0; 
-        }
-        .social-btn span { display: none; }
-        .social-btn svg { width: 20px; height: 20px; margin: 0; }
-        
-        /* Controles no mobile - lado esquerdo inferior */
+        /* Botões de navegação - mais para cima também */
         .controls { 
-            bottom: 28px; 
+            bottom: 80px; /* Subiu os botões */
             left: 16px; 
             gap: 12px; 
             padding: 6px 18px;
@@ -470,28 +467,73 @@
             font-size: 0.85rem; 
         }
         
-        .logo-frame { width: 150px; height: 150px; }
-        .logo-img { width: 120px; height: 120px; }
+        /* Botões sociais - mantém na parte inferior */
+        .social-buttons { 
+            bottom: 20px; 
+            right: 16px; 
+            gap: 10px; 
+        }
+        .social-btn { 
+            padding: 10px; 
+            gap: 0; 
+        }
+        .social-btn span { display: none; }
+        .social-btn svg { width: 22px; height: 22px; margin: 0; }
         
-        /* Mensagem mais para cima no mobile */
-        .cover-message {
-            bottom: 18% !important;
+        /* Botão fechar também ajustado */
+        .close-btn {
+            top: 12px;
+            right: 12px;
+            padding: 6px 16px;
             font-size: 0.8rem;
-            padding: 8px 18px;
+        }
+        
+        .logo-frame { width: 130px; height: 130px; }
+        .logo-img { width: 100px; height: 100px; }
+        
+        /* Mensagem mais para cima */
+        .cover-message {
+            bottom: 15% !important;
+            font-size: 0.75rem;
+            padding: 8px 16px;
             white-space: nowrap;
+        }
+        
+        /* Título menor no mobile */
+        .cover h1 {
+            font-size: 2rem;
+        }
+        .cover .subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
         }
     }
 
     /* Ajuste para telas muito pequenas */
     @media (max-width: 480px) {
-        .cover-message {
-            bottom: 20% !important;
-            font-size: 0.75rem;
-            white-space: nowrap;
+        .book-container { 
+            height: 65vh; 
+            margin-top: 8vh;
         }
-        .controls button {
-            padding: 4px 12px;
-            font-size: 0.75rem;
+        .controls { 
+            bottom: 70px;
+            padding: 5px 14px;
+        }
+        .controls button { 
+            padding: 5px 12px; 
+            font-size: 0.7rem; 
+        }
+        .social-buttons { 
+            bottom: 18px;
+        }
+        .social-btn { 
+            padding: 8px; 
+        }
+        .social-btn svg { width: 18px; height: 18px; }
+        .cover-message {
+            bottom: 18% !important;
+            font-size: 0.7rem;
+            white-space: nowrap;
         }
     }
 </style>
@@ -932,7 +974,7 @@
     else if (!isMobile && pageRight) pageRight.style.display = 'block';
     
     setupZoomFeatures();
-    console.log("Catálogo com botões reposicionados - navegação à esquerda, redes sociais à direita!");
+    console.log("Versão mobile com fotos e botões reposicionados para cima!");
 </script>
 </body>
 </html>
