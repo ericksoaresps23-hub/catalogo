@@ -226,9 +226,11 @@
         pointer-events: none;
     }
 
+    /* Controles - reposicionados para não ficar atrás dos botões sociais */
     .controls {
         position: fixed;
         bottom: 28px;
+        left: 28px;
         display: flex;
         gap: 20px;
         z-index: 30;
@@ -270,7 +272,7 @@
         padding: 8px 22px;
     }
 
-    /* Botões redes sociais */
+    /* Botões redes sociais - lado direito */
     .social-buttons {
         position: fixed;
         bottom: 28px;
@@ -442,15 +444,36 @@
         .page { width: 100%; left: 0; transform-origin: left center; }
         .page-right { display: none; }
         .book::before { display: none; }
-        .social-buttons { bottom: 28px; right: 16px; gap: 10px; }
-        .social-btn { padding: 10px; gap: 0; }
+        
+        /* Botões sociais no mobile */
+        .social-buttons { 
+            bottom: 28px; 
+            right: 16px; 
+            gap: 10px; 
+        }
+        .social-btn { 
+            padding: 10px; 
+            gap: 0; 
+        }
         .social-btn span { display: none; }
         .social-btn svg { width: 20px; height: 20px; margin: 0; }
-        .controls button { padding: 6px 16px; font-size: 0.85rem; }
+        
+        /* Controles no mobile - lado esquerdo inferior */
+        .controls { 
+            bottom: 28px; 
+            left: 16px; 
+            gap: 12px; 
+            padding: 6px 18px;
+        }
+        .controls button { 
+            padding: 6px 16px; 
+            font-size: 0.85rem; 
+        }
+        
         .logo-frame { width: 150px; height: 150px; }
         .logo-img { width: 120px; height: 120px; }
         
-        /* Mensagem mais para cima no mobile para não ficar atrás dos botões */
+        /* Mensagem mais para cima no mobile */
         .cover-message {
             bottom: 18% !important;
             font-size: 0.8rem;
@@ -465,6 +488,10 @@
             bottom: 20% !important;
             font-size: 0.75rem;
             white-space: nowrap;
+        }
+        .controls button {
+            padding: 4px 12px;
+            font-size: 0.75rem;
         }
     }
 </style>
@@ -905,7 +932,7 @@
     else if (!isMobile && pageRight) pageRight.style.display = 'block';
     
     setupZoomFeatures();
-    console.log("Catálogo com Instagram, WhatsApp e zoom fluido - mensagem ajustada no mobile!");
+    console.log("Catálogo com botões reposicionados - navegação à esquerda, redes sociais à direita!");
 </script>
 </body>
 </html>
