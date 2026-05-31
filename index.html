@@ -113,7 +113,6 @@
 
     .cover-message {
         position: absolute;
-        bottom: 12%;
         font-size: 0.9rem;
         background: rgba(230,194,122,0.15);
         padding: 10px 24px;
@@ -123,6 +122,11 @@
         color: #e6c27a;
         border: 1px solid rgba(230,194,122,0.3);
         animation: pulseMessage 2s infinite;
+    }
+
+    /* Desktop */
+    .cover-message {
+        bottom: 12%;
     }
 
     @keyframes pulseMessage {
@@ -445,9 +449,23 @@
         .controls button { padding: 6px 16px; font-size: 0.85rem; }
         .logo-frame { width: 150px; height: 150px; }
         .logo-img { width: 120px; height: 120px; }
-        .cover-message { font-size: 0.8rem; bottom: 10%; padding: 8px 18px; }
-        .zoom-control-btn { padding: 8px 16px; font-size: 0.8rem; }
-        .zoom-header span { font-size: 9px; }
+        
+        /* Mensagem mais para cima no mobile para não ficar atrás dos botões */
+        .cover-message {
+            bottom: 18% !important;
+            font-size: 0.8rem;
+            padding: 8px 18px;
+            white-space: nowrap;
+        }
+    }
+
+    /* Ajuste para telas muito pequenas */
+    @media (max-width: 480px) {
+        .cover-message {
+            bottom: 20% !important;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
     }
 </style>
 </head>
@@ -887,7 +905,7 @@
     else if (!isMobile && pageRight) pageRight.style.display = 'block';
     
     setupZoomFeatures();
-    console.log("Catálogo com Instagram, WhatsApp e zoom fluido!");
+    console.log("Catálogo com Instagram, WhatsApp e zoom fluido - mensagem ajustada no mobile!");
 </script>
 </body>
 </html>
