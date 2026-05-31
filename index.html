@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Glauce Fashion - Catálogo Revista</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+    }
+
+    body {
+        background: #0a0a0a;
+        color: #f0f0f0;
+        font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    /* CAPA ESTILIZADA */
+    .cover {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        background: radial-gradient(circle at 30% 20%, #1a1a2e, #0a0a0a);
+        cursor: pointer;
+        position: relative;
+        z-index: 5;
+        transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        text-align: center;
+    }
+
+    /* Logo com moldura redonda dourada */
+    .logo-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+        z-index: 10;
+    }
+
+    .logo-frame {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(230,194,122,0.2), rgba(230,194,122,0.05));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 0 0 3px rgba(230,194,122,0.6), 0 0 0 8px rgba(230,194,122,0.2), 0 10px 30px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+    }
+
+    .logo-frame::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e6c27a, #d4af5a, #b8943e);
+        z-index: -1;
+        opacity: 0.7;
+    }
+
+    .logo-frame::after {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #1a1a2e, #0f0f1a);
+        z-index: -1;
+    }
+
+    .logo-frame:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 3px rgba(230,194,122,0.9), 0 0 0 12px rgba(230,194,122,0.3), 0 15px 40px rgba(0,0,0,0.4);
+    }
+
+    .logo-img {
+        width: 160px;
+        height: 160px;
+        object-fit: contain;
+        border-radius: 50%;
+        filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        transition: transform 0.3s;
+    }
+
+    .logo-img:hover {
+        transform: scale(1.01);
+    }
+
+    /* Título principal */
+    .cover h1 {
+        font-size: clamp(2.5rem, 10vw, 4.8rem);
+        background: linear-gradient(135deg, #FFF8E7, #E6C27A, #D4AF5A);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: 4px;
+        font-weight: 800;
+        text-transform: uppercase;
+        animation: pulseGlow 1.8s infinite alternate;
+        margin-top: 0.5rem;
+    }
+
+    .cover .subtitle {
+        font-size: 1rem;
+        letter-spacing: 6px;
+        font-weight: 300;
+        color: #e6c27a;
+        border-top: 1px solid rgba(230,194,122,0.5);
+        padding-top: 1rem;
+        width: 80%;
+        max-width: 400px;
+    }
+
+    /* Mensagem na capa */
+    .cover-message {
+        position: absolute;
+        bottom: 12%;
+        font-size: 0.9rem;
+        background: rgba(230,194,122,0.15);
+        padding: 10px 24px;
+        border-radius: 40px;
+        backdrop-filter: blur(8px);
+        letter-spacing: 1px;
+        color: #e6c27a;
+        border: 1px solid rgba(230,194,122,0.3);
+        animation: pulseMessage 2s infinite;
+    }
+
+    @keyframes pulseMessage {
+        0% { opacity: 0.6; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.05); background: rgba(230,194,122,0.25);}
+        100% { opacity: 0.6; transform: scale(1); }
+    }
+
+    @keyframes pulseGlow {
+        0% { text-shadow: 0 0 0px rgba(230,194,122,0.2);}
+        100% { text-shadow: 0 0 15px rgba(230,194,122,0.5);}
+    }
+
+    /* CONTAINER DO LIVRO COM PERSPECTIVA */
+    .book-container {
+        position: relative;
+        width: min(94vw, 1300px);
+        height: 82vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        perspective: 2000px;
+    }
+
+    .book {
+        width: 100%;
+        height: 100%;
+        display: none;
+        position: relative;
+        transform-style: preserve-3d;
+    }
+
+    /* Páginas - estilo livro real */
+    .page {
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        top: 0;
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+        transition: transform 0.45s cubic-bezier(0.4, 0.0, 0.2, 1);
+        box-shadow: 0 0 0 1px rgba(230,194,122,0.15);
+    }
+
+    .page-left {
+        left: 0;
+        transform-origin: right center;
+        border-radius: 8px 0 0 8px;
+        z-index: 2;
+    }
+
+    .page-right {
+        right: 0;
+        transform-origin: left center;
+        border-radius: 0 8px 8px 0;
+        z-index: 2;
+    }
+
+    .page-inner {
+        width: 100%;
+        height: 100%;
+        background: #0c0c0c;
+        overflow: hidden;
+        border-radius: inherit;
+        box-shadow: 0 20px 35px -12px rgba(0,0,0,0.6);
+    }
+
+    .page-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #010101;
+        cursor: zoom-in;
+        display: block;
+    }
+
+    /* ANIMAÇÃO DE VIRAR PÁGINA */
+    .page-right.flipping {
+        transform: rotateY(-180deg);
+        z-index: 10;
+        box-shadow: -15px 0 30px rgba(0,0,0,0.5);
+    }
+
+    .page-left.flipping-back {
+        transform: rotateY(180deg);
+        z-index: 10;
+        box-shadow: 15px 0 30px rgba(0,0,0,0.5);
+    }
+
+    /* Vinco central do livro */
+    .book::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(to right, rgba(230,194,122,0.2), rgba(230,194,122,0.6), rgba(230,194,122,0.2));
+        transform: translateX(-50%);
+        z-index: 20;
+        pointer-events: none;
+    }
+
+    /* Controles */
+    .controls {
+        position: fixed;
+        bottom: 28px;
+        display: flex;
+        gap: 20px;
+        z-index: 30;
+        background: rgba(20,20,30,0.85);
+        backdrop-filter: blur(12px);
+        padding: 10px 25px;
+        border-radius: 60px;
+        border: 1px solid rgba(230,194,122,0.4);
+    }
+
+    button {
+        background: #2a2a2e;
+        border: none;
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 8px 24px;
+        border-radius: 50px;
+        color: #f5e7c8;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    button:hover {
+        background: #3e3e48;
+        transform: translateY(-2px);
+    }
+
+    .close-btn {
+        position: fixed;
+        top: 22px;
+        right: 22px;
+        background: #c72a2f;
+        display: none;
+        z-index: 40;
+        padding: 8px 22px;
+    }
+
+    /* WhatsApp Button */
+    .whatsapp-btn {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: #25D366;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        z-index: 35;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        text-decoration: none;
+        border: none;
+    }
+
+    .whatsapp-btn:hover {
+        background: #20b859;
+        transform: scale(1.05);
+    }
+
+    .whatsapp-btn svg {
+        width: 24px;
+        height: 24px;
+        fill: white;
+    }
+
+    /* Zoom overlay */
+    .zoom {
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 8, 12, 0.97);
+        backdrop-filter: blur(12px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+        cursor: pointer;
+    }
+
+    .zoom img {
+        max-width: 92vw;
+        max-height: 92vh;
+        object-fit: contain;
+        border-radius: 20px;
+        border: 2px solid rgba(240,200,100,0.6);
+        animation: zoomFade 0.2s ease;
+    }
+
+    @keyframes zoomFade {
+        from { opacity: 0; transform: scale(0.96);}
+        to { opacity: 1; transform: scale(1);}
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .book-container {
+            width: 90vw;
+            perspective: 1200px;
+        }
+        .page {
+            width: 100%;
+            left: 0;
+            transform-origin: left center;
+        }
+        .page-right {
+            display: none;
+        }
+        .book::before {
+            display: none;
+        }
+        .whatsapp-btn span {
+            display: none;
+        }
+        .whatsapp-btn svg {
+            margin: 0;
+        }
+        .whatsapp-btn {
+            padding: 12px;
+            right: 16px;
+            bottom: 28px;
+        }
+        .controls button {
+            padding: 6px 16px;
+            font-size: 0.85rem;
+        }
+        .logo-frame {
+            width: 150px;
+            height: 150px;
+        }
+        .logo-img {
+            width: 120px;
+            height: 120px;
+        }
+        .cover-message {
+            font-size: 0.8rem;
+            bottom: 10%;
+            padding: 8px 18px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div id="cover" class="cover">
+    <!-- Logo com moldura redonda dourada -->
+    <div class="logo-wrapper">
+        <div class="logo-frame">
+            <img id="companyLogo" class="logo-img" src="" alt="Logo Glauce Fashion">
+        </div>
+    </div>
+    
+    <h1>GLAUCE FASHION</h1>
+    <div class="subtitle">EDIÇÃO ESPECIAL · ALTO VERÃO</div>
+    
+    <!-- Mensagem na capa -->
+    <div class="cover-message">✨ toque em qualquer lugar para continuar ✨</div>
+</div>
+
+<button id="closeBtn" class="close-btn">✕ FECHAR</button>
+
+<div class="book-container">
+    <div id="book" class="book">
+        <div id="pageLeft" class="page page-left">
+            <div class="page-inner"><img id="leftImg" alt="página esquerda"></div>
+        </div>
+        <div id="pageRight" class="page page-right">
+            <div class="page-inner"><img id="rightImg" alt="página direita"></div>
+        </div>
+    </div>
+</div>
+
+<div class="controls" id="controls" style="display:none;">
+    <button id="prevBtn">◀ ANTERIOR</button>
+    <button id="fullscreenBtn">⛶ TELA CHEIA</button>
+    <button id="nextBtn">PRÓXIMA ▶</button>
+</div>
+
+<a id="whatsappButton" class="whatsapp-btn" href="#" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.8 3.08 1.24 4.79 1.24 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm.01 15.2c-1.48 0-2.93-.4-4.18-1.15l-.3-.18-3.11.82.83-3.03-.2-.31c-.8-1.28-1.22-2.76-1.22-4.28 0-4.54 3.7-8.24 8.24-8.24 4.54 0 8.24 3.7 8.24 8.24s-3.7 8.24-8.24 8.24zm4.52-6.17c-.25-.12-1.47-.73-1.7-.81-.23-.08-.4-.12-.56.12-.16.24-.64.81-.78.98-.14.17-.28.19-.52.07-.24-.12-1-.37-1.9-1.18-.7-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.56-1.35-.77-1.85-.2-.5-.4-.43-.56-.44-.14-.01-.3-.01-.46-.01-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.41-.58 1.61-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.28z"/>
+    </svg>
+    <span>FALE CONOSCO</span>
+</a>
+
+<div class="zoom" id="zoomOverlay">
+    <img id="zoomImg" alt="zoom">
+</div>
+
+<script>
+    // ========== CONFIGURAÇÃO DA LOGO ==========
+    // ⭐ COLOQUE AQUI O CAMINHO DA SUA LOGO ⭐
+    const LOGO_PATH = "gf.jpeg";  // <--- ALTERE AQUI O NOME DO SEU ARQUIVO DE LOGO
+    
+    const DEFAULT_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23e6c27a;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23b8943e;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='95' fill='url(%23grad)' stroke='%23fff8e7' stroke-width='1.5' /%3E%3Ctext x='100' y='125' text-anchor='middle' font-family='Arial, sans-serif' font-size='48' font-weight='bold' fill='%231a1a2e' letter-spacing='2'%3EGF%3C/text%3E%3Ctext x='100' y='152' text-anchor='middle' font-family='Arial, sans-serif' font-size='14' font-weight='300' fill='%233d3520' letter-spacing='3'%3EFASHION%3C/text%3E%3C/svg%3E";
+    
+    // Configuração do WhatsApp
+    const WHATSAPP_NUMBER = "5511999999999";
+    const WHATSAPP_MESSAGE = "Olá! Vi o catálogo Glauce Fashion e gostaria de mais informações!";
+    
+    // ========== SISTEMA DO LIVRO ==========
+    const TOTAL_PHOTOS = 31;
+    let currentIndex = 1;  // índice atual da página (esquerda no desktop, única no mobile)
+    let isOpen = false;
+    let isMobile = window.innerWidth <= 768;
+    let isAnimating = false;
+    let pendingNext = false;
+    let pendingPrev = false;
+
+    // Elementos
+    const coverEl = document.getElementById('cover');
+    const bookEl = document.getElementById('book');
+    const controlsEl = document.getElementById('controls');
+    const closeBtn = document.getElementById('closeBtn');
+    const leftImg = document.getElementById('leftImg');
+    const rightImg = document.getElementById('rightImg');
+    const pageLeft = document.getElementById('pageLeft');
+    const pageRight = document.getElementById('pageRight');
+    const zoomOverlay = document.getElementById('zoomOverlay');
+    const zoomImg = document.getElementById('zoomImg');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const whatsappLink = document.getElementById('whatsappButton');
+    const companyLogo = document.getElementById('companyLogo');
+    
+    // Configurar a logo
+    function setupLogo() {
+        if (LOGO_PATH && LOGO_PATH.trim() !== "") {
+            companyLogo.src = LOGO_PATH;
+        } else {
+            companyLogo.src = DEFAULT_LOGO;
+        }
+        companyLogo.alt = "Logo Glauce Fashion";
+        
+        companyLogo.addEventListener('error', function() {
+            if (this.src !== DEFAULT_LOGO) {
+                this.src = DEFAULT_LOGO;
+            }
+        });
+    }
+    setupLogo();
+    
+    // Configurar WhatsApp
+    whatsappLink.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+    
+    // Helper imagem
+    function getImageUrl(pageNum) {
+        if (pageNum < 1 || pageNum > TOTAL_PHOTOS) return '';
+        return `img (${pageNum}).jpeg`;
+    }
+    
+    // Fallback para imagens das páginas
+    function addFallback(imgEl) {
+        if (!imgEl) return;
+        imgEl.addEventListener('error', () => {
+            if (!imgEl.src.includes('data:image')) {
+                imgEl.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 3'%3E%3Crect width='100%25' height='100%25' fill='%23121212'/%3E%3Ctext x='0.5' y='1.6' font-size='0.25' fill='%23887755'%3E📷%3C/text%3E%3C/svg%3E";
+            }
+        });
+    }
+    addFallback(leftImg);
+    addFallback(rightImg);
+    
+    // Atualiza conteúdo das páginas
+    function updatePageContent() {
+        console.log("updatePageContent - currentIndex:", currentIndex);
+        leftImg.src = getImageUrl(currentIndex);
+        leftImg.alt = `Página ${currentIndex}`;
+        
+        if (!isMobile) {
+            const rightPageNum = currentIndex + 1;
+            if (rightPageNum <= TOTAL_PHOTOS) {
+                rightImg.src = getImageUrl(rightPageNum);
+                rightImg.alt = `Página ${rightPageNum}`;
+            } else {
+                rightImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Crect width='2' height='2' fill='%23111111'/%3E%3C/svg%3E";
+            }
+        }
+    }
+    
+    // ANIMAÇÃO DE VIRAR PÁGINA - CORRIGIDA PARA MOBILE
+    function animateNextPage() {
+        if (isAnimating) return;
+        
+        let canProceed = false;
+        if (isMobile) {
+            canProceed = (currentIndex < TOTAL_PHOTOS);
+        } else {
+            canProceed = (currentIndex + 2 <= TOTAL_PHOTOS);
+        }
+        
+        if (!canProceed) {
+            triggerEdgeEffect();
+            return;
+        }
+        
+        isAnimating = true;
+        
+        if (isMobile) {
+            // MOBILE: animação simples com fade + rotação
+            const currentPageDiv = pageLeft;
+            currentPageDiv.style.transition = 'transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.2s';
+            currentPageDiv.style.transform = 'rotateY(-95deg)';
+            currentPageDiv.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                currentIndex++;
+                updatePageContent();
+                currentPageDiv.style.transform = '';
+                currentPageDiv.style.opacity = '1';
+                setTimeout(() => {
+                    isAnimating = false;
+                    if (pendingNext) { pendingNext = false; animateNextPage(); }
+                    if (pendingPrev) { pendingPrev = false; animatePrevPage(); }
+                }, 100);
+            }, 200);
+        } 
+        else {
+            // DESKTOP: animação 3D completa
+            const newIndex = currentIndex + 2;
+            
+            pageRight.classList.add('flipping');
+            
+            setTimeout(() => {
+                leftImg.src = getImageUrl(newIndex);
+                leftImg.alt = `Página ${newIndex}`;
+                
+                const newRightPageNum = newIndex + 1;
+                if (newRightPageNum <= TOTAL_PHOTOS) {
+                    rightImg.src = getImageUrl(newRightPageNum);
+                    rightImg.alt = `Página ${newRightPageNum}`;
+                } else {
+                    rightImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Crect width='2' height='2' fill='%23111111'/%3E%3C/svg%3E";
+                }
+                
+                currentIndex = newIndex;
+            }, 220);
+            
+            setTimeout(() => {
+                pageRight.classList.remove('flipping');
+                isAnimating = false;
+                if (pendingNext) { pendingNext = false; animateNextPage(); }
+                if (pendingPrev) { pendingPrev = false; animatePrevPage(); }
+            }, 480);
+        }
+    }
+    
+    function animatePrevPage() {
+        if (isAnimating) return;
+        
+        let canGoBack = false;
+        if (isMobile) {
+            canGoBack = (currentIndex > 1);
+        } else {
+            canGoBack = (currentIndex > 1);
+        }
+        
+        if (!canGoBack) {
+            triggerEdgeEffect();
+            return;
+        }
+        
+        isAnimating = true;
+        
+        if (isMobile) {
+            const currentPageDiv = pageLeft;
+            currentPageDiv.style.transition = 'transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.2s';
+            currentPageDiv.style.transform = 'rotateY(95deg)';
+            currentPageDiv.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                currentIndex--;
+                updatePageContent();
+                currentPageDiv.style.transform = '';
+                currentPageDiv.style.opacity = '1';
+                setTimeout(() => {
+                    isAnimating = false;
+                    if (pendingNext) { pendingNext = false; animateNextPage(); }
+                    if (pendingPrev) { pendingPrev = false; animatePrevPage(); }
+                }, 100);
+            }, 200);
+        } 
+        else {
+            const newIndex = currentIndex - 2;
+            if (newIndex < 1) {
+                if (currentIndex === 1) {
+                    isAnimating = false;
+                    triggerEdgeEffect();
+                    return;
+                }
+                const finalIndex = 1;
+                pageLeft.classList.add('flipping-back');
+                setTimeout(() => {
+                    leftImg.src = getImageUrl(finalIndex);
+                    const rightNum = finalIndex + 1;
+                    if (rightNum <= TOTAL_PHOTOS) rightImg.src = getImageUrl(rightNum);
+                    else rightImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Crect width='2' height='2' fill='%23111111'/%3E%3C/svg%3E";
+                    currentIndex = finalIndex;
+                }, 220);
+                setTimeout(() => {
+                    pageLeft.classList.remove('flipping-back');
+                    isAnimating = false;
+                }, 480);
+                return;
+            }
+            
+            pageLeft.classList.add('flipping-back');
+            setTimeout(() => {
+                leftImg.src = getImageUrl(newIndex);
+                const newRight = newIndex + 1;
+                if (newRight <= TOTAL_PHOTOS) rightImg.src = getImageUrl(newRight);
+                else rightImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Crect width='2' height='2' fill='%23111111'/%3E%3C/svg%3E";
+                currentIndex = newIndex;
+            }, 220);
+            setTimeout(() => {
+                pageLeft.classList.remove('flipping-back');
+                isAnimating = false;
+                if (pendingNext) { pendingNext = false; animateNextPage(); }
+                if (pendingPrev) { pendingPrev = false; animatePrevPage(); }
+            }, 480);
+        }
+    }
+    
+    function triggerEdgeEffect() {
+        const container = document.querySelector('.book-container');
+        if (container) {
+            container.style.transform = 'translateX(4px)';
+            setTimeout(() => { if(container) container.style.transform = ''; }, 120);
+        }
+    }
+    
+    function nextPage() {
+        if (!isOpen || isAnimating) {
+            if (isAnimating) pendingNext = true;
+            return;
+        }
+        animateNextPage();
+    }
+    
+    function prevPage() {
+        if (!isOpen || isAnimating) {
+            if (isAnimating) pendingPrev = true;
+            return;
+        }
+        animatePrevPage();
+    }
+    
+    function openBook() {
+        if (isOpen) return;
+        isOpen = true;
+        currentIndex = 1;
+        coverEl.style.opacity = '0';
+        setTimeout(() => {
+            coverEl.style.display = 'none';
+            bookEl.style.display = 'block';
+            controlsEl.style.display = 'flex';
+            closeBtn.style.display = 'block';
+            updatePageContent();
+            pageLeft.classList.remove('flipping-back');
+            pageRight.classList.remove('flipping');
+            pageLeft.style.transform = '';
+            pageRight.style.transform = '';
+            pageLeft.style.opacity = '1';
+            isAnimating = false;
+        }, 300);
+    }
+    
+    function closeBook() {
+        if (!isOpen) return;
+        isOpen = false;
+        isAnimating = false;
+        pendingNext = false;
+        pendingPrev = false;
+        bookEl.style.opacity = '0';
+        setTimeout(() => {
+            bookEl.style.display = 'none';
+            controlsEl.style.display = 'none';
+            closeBtn.style.display = 'none';
+            coverEl.style.display = 'flex';
+            coverEl.style.opacity = '1';
+            bookEl.style.opacity = '1';
+            pageLeft.classList.remove('flipping-back');
+            pageRight.classList.remove('flipping');
+        }, 180);
+    }
+    
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+    }
+    
+    function handleZoom(e) {
+        if (!isOpen) return;
+        if (e.target.tagName === 'IMG' && e.target.src && !e.target.src.includes('data:image/svg')) {
+            zoomImg.src = e.target.src;
+            zoomOverlay.style.display = 'flex';
+        }
+    }
+    
+    // Eventos
+    coverEl.addEventListener('click', openBook);
+    closeBtn.addEventListener('click', closeBook);
+    prevBtn.addEventListener('click', prevPage);
+    nextBtn.addEventListener('click', nextPage);
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    bookEl.addEventListener('click', handleZoom);
+    zoomOverlay.addEventListener('click', () => zoomOverlay.style.display = 'none');
+    zoomImg.addEventListener('click', (e) => e.stopPropagation());
+    
+    document.addEventListener('keydown', (e) => {
+        if (!isOpen) {
+            if (e.key === 'Enter' || e.key === 'ArrowRight') { openBook(); e.preventDefault(); }
+            return;
+        }
+        switch(e.key) {
+            case 'ArrowRight': nextPage(); e.preventDefault(); break;
+            case 'ArrowLeft': prevPage(); e.preventDefault(); break;
+            case 'Escape':
+                if (zoomOverlay.style.display === 'flex') zoomOverlay.style.display = 'none';
+                else closeBook();
+                e.preventDefault();
+                break;
+            case 'f': case 'F': toggleFullscreen(); e.preventDefault(); break;
+        }
+    });
+    
+    // Toque na tela para próximo/ anterior (mobile)
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    bookEl.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    bookEl.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) {
+            // swipe esquerda -> próxima
+            nextPage();
+        } else if (touchEndX - touchStartX > 50) {
+            // swipe direita -> anterior
+            prevPage();
+        }
+    });
+    
+    window.addEventListener('resize', () => {
+        const wasMobile = isMobile;
+        isMobile = window.innerWidth <= 768;
+        if (isOpen && wasMobile !== isMobile) {
+            if (!isMobile && pageRight) pageRight.style.display = 'block';
+            else if (isMobile && pageRight) pageRight.style.display = 'none';
+            updatePageContent();
+        }
+    });
+    
+    // Inicialização
+    if (isMobile && pageRight) pageRight.style.display = 'none';
+    else if (!isMobile && pageRight) pageRight.style.display = 'block';
+    
+    console.log("Revista carregada - Total de fotos:", TOTAL_PHOTOS);
+</script>
+</body>
+</html>
