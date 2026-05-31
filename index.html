@@ -23,7 +23,6 @@
         overflow: hidden;
     }
 
-    /* CAPA ESTILIZADA */
     .cover {
         width: 100vw;
         height: 100vh;
@@ -137,7 +136,6 @@
         100% { text-shadow: 0 0 15px rgba(230,194,122,0.5);}
     }
 
-    /* LIVRO */
     .book-container {
         position: relative;
         width: min(94vw, 1300px);
@@ -197,7 +195,6 @@
         object-fit: contain;
         background: #010101;
         display: block;
-        pointer-events: auto;
     }
 
     .page-right.flipping {
@@ -301,7 +298,7 @@
         fill: white;
     }
 
-    /* MODAL DE ZOOM - LIVRE PARA MOVER A FOTO */
+    /* MODAL DE ZOOM COM ZOOM NO PONTO DO TOQUE */
     .zoom-modal {
         position: fixed;
         inset: 0;
@@ -352,24 +349,16 @@
 
     .zoom-close-btn:hover {
         background: #c72a2f;
-        transform: scale(1.02);
     }
 
-    /* Viewport com scroll livre - sem centralização forçada */
     .zoom-viewport {
         width: 100%;
         height: 100%;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
-        cursor: grab;
         background: #000;
     }
 
-    .zoom-viewport:active {
-        cursor: grabbing;
-    }
-
-    /* Wrapper que contém a imagem - sem centralização, apenas posicionamento */
     .zoom-wrapper {
         display: block;
         width: fit-content;
@@ -383,7 +372,7 @@
         max-width: none;
         width: auto;
         height: auto;
-        transform-origin: top left;
+        transform-origin: 0 0;
         transition: transform 0.05s linear;
         border-radius: 4px;
         box-shadow: 0 0 0 1px rgba(230,194,122,0.2);
@@ -431,7 +420,6 @@
         .logo-img { width: 120px; height: 120px; }
         .cover-message { font-size: 0.8rem; bottom: 10%; padding: 8px 18px; }
         .zoom-control-btn { padding: 8px 16px; font-size: 0.8rem; }
-        .zoom-close-btn { padding: 6px 16px; }
         .zoom-header span { font-size: 9px; }
     }
 </style>
@@ -479,10 +467,9 @@
     <span>FALE CONOSCO</span>
 </a>
 
-<!-- MODAL DE ZOOM LIVRE -->
 <div id="zoomModal" class="zoom-modal">
     <div class="zoom-header">
-        <span>🔍 Use dois dedos para ampliar | Arraste para mover a foto</span>
+        <span>🔍 Use dois dedos para ampliar no ponto que você tocar</span>
         <button id="zoomCloseModalBtn" class="zoom-close-btn">✕ FECHAR</button>
     </div>
     <div id="zoomViewport" class="zoom-viewport">
@@ -491,7 +478,7 @@
         </div>
     </div>
     <div class="zoom-controls-bottom">
-        <button id="zoomResetBtn" class="zoom-control-btn">⟲ RESETAR ZOOM / POSIÇÃO</button>
+        <button id="zoomResetBtn" class="zoom-control-btn">⟲ RESETAR</button>
     </div>
 </div>
 
@@ -532,8 +519,9 @@
     const zoomResetBtn = document.getElementById('zoomResetBtn');
     const zoomCloseModalBtn = document.getElementById('zoomCloseModalBtn');
     
-    // Estado do zoom
     let currentZoom = 1;
+    let imgNaturalWidth = 0;
+    let imgNaturalHeight = 0;
     
     function setupLogo() {
         companyLogo.src = LOGO_PATH && LOGO_PATH.trim() !== "" ? LOGO_PATH : DEFAULT_LOGO;
@@ -565,16 +553,25 @@
         }
     }
     
-    // ========== ZOOM LIVRE - SEM CENTRALIZAÇÃO ==========
+    // ========== ZOOM COM PONTO CENTRADO NO TOQUE ==========
     function openZoomModal(imgSrc) {
         if (!imgSrc || imgSrc.includes('data:image/svg')) return;
         zoomImage.src = imgSrc;
         currentZoom = 1;
-        applyZoom();
+        applyZoomAndCenter();
         zoomModal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
-        // Resetar scroll/posição
+        // Obter dimensões naturais da imagem
+        zoomImage.onload = () => {
+            imgNaturalWidth = zoomImage.naturalWidth;
+            imgNaturalHeight = zoomImage.naturalHeight;
+        };
+        if (zoomImage.complete) {
+            imgNaturalWidth = zoomImage.naturalWidth;
+            imgNaturalHeight = zoomImage.naturalHeight;
+        }
+        
         setTimeout(() => {
             zoomViewport.scrollLeft = 0;
             zoomViewport.scrollTop = 0;
@@ -586,27 +583,60 @@
         zoomImage.src = '';
         document.body.style.overflow = '';
         currentZoom = 1;
-        applyZoom();
     }
     
-    function applyZoom() {
+    function applyZoomAndCenter() {
         zoomImage.style.transform = `scale(${currentZoom})`;
-        // A imagem escala a partir do topo/esquerda, permitindo arrastar livremente
     }
     
     function resetZoom() {
         currentZoom = 1;
-        applyZoom();
+        applyZoomAndCenter();
         zoomViewport.scrollLeft = 0;
         zoomViewport.scrollTop = 0;
     }
     
-    // Configurar zoom com pinça (mobile) e roda (PC) + arrastar livre
+    // Função para fazer zoom no ponto específico do toque
+    function zoomAtPoint(clientX, clientY, deltaZoom) {
+        if (!zoomViewport) return;
+        
+        const rect = zoomViewport.getBoundingClientRect();
+        const viewportX = clientX - rect.left;
+        const viewportY = clientY - rect.top;
+        
+        // Posição atual do scroll
+        const oldScrollLeft = zoomViewport.scrollLeft;
+        const oldScrollTop = zoomViewport.scrollTop;
+        
+        // Ponto na imagem antes do zoom (em coordenadas da imagem)
+        const pointX = (oldScrollLeft + viewportX) / currentZoom;
+        const pointY = (oldScrollTop + viewportY) / currentZoom;
+        
+        // Novo zoom
+        let newZoom = currentZoom + deltaZoom;
+        newZoom = Math.min(Math.max(newZoom, 0.8), 5);
+        
+        if (newZoom === currentZoom) return;
+        
+        // Novo scroll para manter o ponto no mesmo lugar
+        const newScrollLeft = pointX * newZoom - viewportX;
+        const newScrollTop = pointY * newZoom - viewportY;
+        
+        currentZoom = newZoom;
+        applyZoomAndCenter();
+        
+        // Aplicar novo scroll
+        zoomViewport.scrollLeft = newScrollLeft;
+        zoomViewport.scrollTop = newScrollTop;
+    }
+    
+    // Configurar eventos de zoom
     function setupZoomFeatures() {
         let initialDistance = 0;
         let initialZoom = 1;
+        let centerX = 0, centerY = 0;
         
-        // ZOOM COM TOUCH (PINCH) - mobile
+        // ZOOM COM DOIS DEDOS (PINCH) - mobile
         zoomViewport.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 e.preventDefault();
@@ -614,6 +644,9 @@
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
                 initialDistance = Math.hypot(dx, dy);
                 initialZoom = currentZoom;
+                // Ponto central entre os dois dedos
+                centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
         });
         
@@ -624,11 +657,33 @@
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
                 const newDistance = Math.hypot(dx, dy);
                 if (initialDistance > 0) {
+                    const newCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                    const newCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                    
                     let newZoom = initialZoom * (newDistance / initialDistance);
                     newZoom = Math.min(Math.max(newZoom, 0.8), 5);
+                    
                     if (newZoom !== currentZoom) {
+                        const rect = zoomViewport.getBoundingClientRect();
+                        const viewportX = newCenterX - rect.left;
+                        const viewportY = newCenterY - rect.top;
+                        
+                        const oldScrollLeft = zoomViewport.scrollLeft;
+                        const oldScrollTop = zoomViewport.scrollTop;
+                        const pointX = (oldScrollLeft + viewportX) / currentZoom;
+                        const pointY = (oldScrollTop + viewportY) / currentZoom;
+                        
                         currentZoom = newZoom;
-                        applyZoom();
+                        applyZoomAndCenter();
+                        
+                        const newScrollLeft = pointX * currentZoom - viewportX;
+                        const newScrollTop = pointY * currentZoom - viewportY;
+                        
+                        zoomViewport.scrollLeft = newScrollLeft;
+                        zoomViewport.scrollTop = newScrollTop;
+                        
+                        initialZoom = currentZoom;
+                        initialDistance = newDistance;
                     }
                 }
             }
@@ -638,21 +693,36 @@
             initialDistance = 0;
         });
         
-        // ZOOM COM RODA DO MOUSE (PC)
+        // ZOOM COM RODA DO MOUSE (PC) - também no ponto do cursor
         zoomViewport.addEventListener('wheel', (e) => {
             if (zoomModal.style.display === 'flex') {
                 e.preventDefault();
                 const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                const rect = zoomViewport.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const oldScrollLeft = zoomViewport.scrollLeft;
+                const oldScrollTop = zoomViewport.scrollTop;
+                const pointX = (oldScrollLeft + mouseX) / currentZoom;
+                const pointY = (oldScrollTop + mouseY) / currentZoom;
+                
                 let newZoom = currentZoom + delta;
                 newZoom = Math.min(Math.max(newZoom, 0.8), 5);
+                
                 if (newZoom !== currentZoom) {
                     currentZoom = newZoom;
-                    applyZoom();
+                    applyZoomAndCenter();
+                    
+                    const newScrollLeft = pointX * currentZoom - mouseX;
+                    const newScrollTop = pointY * currentZoom - mouseY;
+                    
+                    zoomViewport.scrollLeft = newScrollLeft;
+                    zoomViewport.scrollTop = newScrollTop;
                 }
             }
         });
         
-        // Reset zoom
         zoomResetBtn.addEventListener('click', resetZoom);
     }
     
@@ -822,9 +892,8 @@
     if (isMobile && pageRight) pageRight.style.display = 'none';
     else if (!isMobile && pageRight) pageRight.style.display = 'block';
     
-    // Inicializar zoom
     setupZoomFeatures();
-    console.log("Catálogo com zoom livre - mova a foto para qualquer lugar!");
+    console.log("Zoom corrigido - agora amplia exatamente onde você toca!");
 </script>
 </body>
 </html>
