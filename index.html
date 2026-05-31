@@ -9,7 +9,6 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        user-select: none;
     }
 
     body {
@@ -41,7 +40,6 @@
         text-align: center;
     }
 
-    /* Logo com moldura redonda dourada */
     .logo-wrapper {
         position: relative;
         display: flex;
@@ -61,7 +59,6 @@
         justify-content: center;
         position: relative;
         box-shadow: 0 0 0 3px rgba(230,194,122,0.6), 0 0 0 8px rgba(230,194,122,0.2), 0 10px 30px rgba(0,0,0,0.3);
-        transition: all 0.3s ease;
     }
 
     .logo-frame::before {
@@ -91,7 +88,6 @@
         filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
     }
 
-    /* Título principal */
     .cover h1 {
         font-size: clamp(2.5rem, 10vw, 4.8rem);
         background: linear-gradient(135deg, #FFF8E7, #E6C27A, #D4AF5A);
@@ -141,7 +137,7 @@
         100% { text-shadow: 0 0 15px rgba(230,194,122,0.5);}
     }
 
-    /* CONTAINER DO LIVRO */
+    /* LIVRO */
     .book-container {
         position: relative;
         width: min(94vw, 1300px);
@@ -229,7 +225,6 @@
         pointer-events: none;
     }
 
-    /* Controles */
     .controls {
         position: fixed;
         bottom: 28px;
@@ -306,68 +301,115 @@
         fill: white;
     }
 
-    /* MODAL DE ZOOM COM SUPORTE A PINCH ZOOM */
+    /* MODAL DE ZOOM COM SUPORTE A ARRASTAR E ZOOM */
     .zoom-modal {
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.98);
         backdrop-filter: blur(20px);
         display: none;
-        justify-content: center;
-        align-items: center;
         z-index: 1000;
-        cursor: pointer;
         flex-direction: column;
-        gap: 20px;
+        overflow: hidden;
     }
 
-    /* Container do zoom com overflow para scroll/pinch */
+    .zoom-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 15px 20px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1002;
+        pointer-events: none;
+    }
+
+    .zoom-header span {
+        background: rgba(0,0,0,0.6);
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        color: #e6c27a;
+        backdrop-filter: blur(4px);
+        pointer-events: none;
+    }
+
+    .zoom-close-btn {
+        pointer-events: auto;
+        background: rgba(199,42,47,0.9);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .zoom-close-btn:hover {
+        background: #c72a2f;
+        transform: scale(1.02);
+    }
+
+    /* Container onde a imagem pode ser arrastada */
     .zoom-viewport {
         width: 100%;
-        height: calc(100% - 80px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        height: 100%;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
         cursor: grab;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #000;
     }
 
     .zoom-viewport:active {
         cursor: grabbing;
     }
 
+    .zoom-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 100%;
+        min-height: 100%;
+        transform-origin: center center;
+    }
+
     .zoom-image {
+        display: block;
         max-width: none;
         width: auto;
         height: auto;
-        max-height: none;
-        display: block;
-        transition: transform 0.05s linear;
         transform-origin: center center;
-        pointer-events: auto;
-        border-radius: 8px;
-        box-shadow: 0 0 0 2px rgba(230,194,122,0.3);
+        transition: transform 0.05s linear;
+        border-radius: 4px;
+        box-shadow: 0 0 0 1px rgba(230,194,122,0.3);
+        pointer-events: none;
     }
 
-    /* Suporte a zoom nativo em mobile com viewport */
-    .zoom-modal .zoom-controls {
+    .zoom-controls-bottom {
         position: fixed;
-        bottom: 30px;
+        bottom: 20px;
         left: 0;
         right: 0;
         display: flex;
         justify-content: center;
         gap: 15px;
-        z-index: 1001;
+        z-index: 1002;
     }
 
     .zoom-control-btn {
-        background: rgba(0,0,0,0.6);
+        background: rgba(0,0,0,0.7);
         backdrop-filter: blur(8px);
         border: 1px solid rgba(230,194,122,0.5);
         color: #e6c27a;
-        padding: 10px 20px;
+        padding: 10px 24px;
         border-radius: 40px;
         font-size: 0.9rem;
         font-weight: bold;
@@ -380,83 +422,19 @@
         transform: scale(1.05);
     }
 
-    .zoom-close-btn {
-        background: rgba(199,42,47,0.8);
-        border-color: #ff6b6b;
-        color: white;
-    }
-
-    .zoom-close-btn:hover {
-        background: #c72a2f;
-    }
-
-    .zoom-hint {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(0,0,0,0.5);
-        color: #e6c27a;
-        font-size: 12px;
-        padding: 5px 12px;
-        border-radius: 20px;
-        z-index: 1002;
-        backdrop-filter: blur(4px);
-        pointer-events: none;
-    }
-
     @media (max-width: 768px) {
-        .book-container {
-            width: 90vw;
-            perspective: 1200px;
-        }
-        .page {
-            width: 100%;
-            left: 0;
-            transform-origin: left center;
-        }
-        .page-right {
-            display: none;
-        }
-        .book::before {
-            display: none;
-        }
-        .whatsapp-btn span {
-            display: none;
-        }
-        .whatsapp-btn svg {
-            margin: 0;
-        }
-        .whatsapp-btn {
-            padding: 12px;
-            right: 16px;
-            bottom: 28px;
-        }
-        .controls button {
-            padding: 6px 16px;
-            font-size: 0.85rem;
-        }
-        .logo-frame {
-            width: 150px;
-            height: 150px;
-        }
-        .logo-img {
-            width: 120px;
-            height: 120px;
-        }
-        .cover-message {
-            font-size: 0.8rem;
-            bottom: 10%;
-            padding: 8px 18px;
-        }
-        .zoom-control-btn {
-            padding: 8px 16px;
-            font-size: 0.8rem;
-        }
-        .zoom-hint {
-            font-size: 10px;
-            top: 10px;
-            right: 10px;
-        }
+        .book-container { width: 90vw; perspective: 1200px; }
+        .page { width: 100%; left: 0; transform-origin: left center; }
+        .page-right { display: none; }
+        .book::before { display: none; }
+        .whatsapp-btn span { display: none; }
+        .whatsapp-btn { padding: 12px; right: 16px; bottom: 28px; }
+        .controls button { padding: 6px 16px; font-size: 0.85rem; }
+        .logo-frame { width: 150px; height: 150px; }
+        .logo-img { width: 120px; height: 120px; }
+        .cover-message { font-size: 0.8rem; bottom: 10%; padding: 8px 18px; }
+        .zoom-control-btn { padding: 8px 16px; font-size: 0.8rem; }
+        .zoom-close-btn { padding: 6px 16px; }
     }
 </style>
 </head>
@@ -503,15 +481,19 @@
     <span>FALE CONOSCO</span>
 </a>
 
-<!-- MODAL DE ZOOM COM SUPORTE A PINCH -->
+<!-- MODAL DE ZOOM -->
 <div id="zoomModal" class="zoom-modal">
-    <div class="zoom-hint">🔍 Use dois dedos para ampliar (mobile) | Roda do mouse (PC)</div>
-    <div id="zoomViewport" class="zoom-viewport">
-        <img id="zoomImage" class="zoom-image" src="" alt="zoom">
+    <div class="zoom-header">
+        <span>🔍 Clique e arraste para mover | Dois dedos para zoom</span>
+        <button id="zoomCloseModalBtn" class="zoom-close-btn">✕ FECHAR</button>
     </div>
-    <div class="zoom-controls">
-        <button id="zoomResetBtn" class="zoom-control-btn">⟲ 100%</button>
-        <button id="zoomCloseModalBtn" class="zoom-control-btn zoom-close-btn">✕ FECHAR</button>
+    <div id="zoomViewport" class="zoom-viewport">
+        <div id="zoomWrapper" class="zoom-wrapper">
+            <img id="zoomImage" class="zoom-image" src="" alt="zoom">
+        </div>
+    </div>
+    <div class="zoom-controls-bottom">
+        <button id="zoomResetBtn" class="zoom-control-btn">⟲ RESETAR ZOOM</button>
     </div>
 </div>
 
@@ -547,33 +529,25 @@
     // Zoom elementos
     const zoomModal = document.getElementById('zoomModal');
     const zoomViewport = document.getElementById('zoomViewport');
+    const zoomWrapper = document.getElementById('zoomWrapper');
     const zoomImage = document.getElementById('zoomImage');
     const zoomResetBtn = document.getElementById('zoomResetBtn');
     const zoomCloseModalBtn = document.getElementById('zoomCloseModalBtn');
     
     // Estado do zoom
-    let currentZoomScale = 1;
+    let currentZoom = 1;
     let currentImageSrc = '';
     
-    // Configurar logo
-    function setupLogo() {
-        if (LOGO_PATH && LOGO_PATH.trim() !== "") {
-            companyLogo.src = LOGO_PATH;
-        } else {
-            companyLogo.src = DEFAULT_LOGO;
-        }
-        companyLogo.addEventListener('error', () => {
-            if (companyLogo.src !== DEFAULT_LOGO) companyLogo.src = DEFAULT_LOGO;
-        });
-    }
     setupLogo();
+    function setupLogo() {
+        companyLogo.src = LOGO_PATH && LOGO_PATH.trim() !== "" ? LOGO_PATH : DEFAULT_LOGO;
+        companyLogo.addEventListener('error', () => { if (companyLogo.src !== DEFAULT_LOGO) companyLogo.src = DEFAULT_LOGO; });
+    }
     
-    // WhatsApp
     whatsappLink.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
     
     function getImageUrl(pageNum) {
-        if (pageNum < 1 || pageNum > TOTAL_PHOTOS) return '';
-        return `img (${pageNum}).jpeg`;
+        return (pageNum >= 1 && pageNum <= TOTAL_PHOTOS) ? `img (${pageNum}).jpeg` : '';
     }
     
     function addFallback(imgEl) {
@@ -590,25 +564,21 @@
         leftImg.src = getImageUrl(currentIndex);
         if (!isMobile) {
             const rightPageNum = currentIndex + 1;
-            if (rightPageNum <= TOTAL_PHOTOS) {
-                rightImg.src = getImageUrl(rightPageNum);
-            } else {
-                rightImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Crect width='2' height='2' fill='%23111111'/%3E%3C/svg%3E";
-            }
+            rightImg.src = (rightPageNum <= TOTAL_PHOTOS) ? getImageUrl(rightPageNum) : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Crect width='2' height='2' fill='%23111111'/%3E%3C/svg%3E";
         }
     }
     
-    // ========== FUNÇÃO DE ZOOM COM PINCH SUPORTE ==========
+    // ========== FUNÇÕES DE ZOOM COM ARRASTAR ==========
     function openZoomModal(imgSrc) {
         if (!imgSrc || imgSrc.includes('data:image/svg')) return;
         currentImageSrc = imgSrc;
         zoomImage.src = imgSrc;
-        currentZoomScale = 1;
-        applyZoomScale();
+        currentZoom = 1;
+        applyZoomAndPosition();
         zoomModal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
-        // Forçar reflow para garantir que o zoom funcione
+        // Resetar scroll
         setTimeout(() => {
             zoomViewport.scrollLeft = 0;
             zoomViewport.scrollTop = 0;
@@ -619,34 +589,40 @@
         zoomModal.style.display = 'none';
         zoomImage.src = '';
         document.body.style.overflow = '';
-        currentZoomScale = 1;
-        applyZoomScale();
+        currentZoom = 1;
+        applyZoomAndPosition();
     }
     
-    function applyZoomScale() {
-        zoomImage.style.transform = `scale(${currentZoomScale})`;
+    function applyZoomAndPosition() {
+        zoomImage.style.transform = `scale(${currentZoom})`;
     }
     
     function resetZoom() {
-        currentZoomScale = 1;
-        applyZoomScale();
+        currentZoom = 1;
+        applyZoomAndPosition();
         zoomViewport.scrollLeft = 0;
         zoomViewport.scrollTop = 0;
     }
     
-    // Suporte a zoom com dois dedos (mobile) e roda do mouse (PC)
-    function setupZoomGestures() {
+    // Suporte a zoom com dois dedos (mobile) e roda do mouse (PC) + arrastar
+    function setupZoomFeatures() {
         let initialDistance = 0;
-        let initialScale = 1;
+        let initialZoom = 1;
+        let startX = 0, startY = 0;
+        let isPanning = false;
         
-        // Touch zoom (pinch) para mobile
+        // ZOOM COM TOUCH (PINCH) - mobile
         zoomViewport.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 e.preventDefault();
                 const dx = e.touches[0].clientX - e.touches[1].clientX;
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
                 initialDistance = Math.hypot(dx, dy);
-                initialScale = currentZoomScale;
+                initialZoom = currentZoom;
+            } else if (e.touches.length === 1) {
+                isPanning = true;
+                startX = e.touches[0].clientX - zoomViewport.scrollLeft;
+                startY = e.touches[0].clientY - zoomViewport.scrollTop;
             }
         });
         
@@ -657,33 +633,80 @@
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
                 const newDistance = Math.hypot(dx, dy);
                 if (initialDistance > 0) {
-                    let newScale = initialScale * (newDistance / initialDistance);
-                    newScale = Math.min(Math.max(newScale, 0.8), 4);
-                    currentZoomScale = newScale;
-                    applyZoomScale();
+                    let newZoom = initialZoom * (newDistance / initialDistance);
+                    newZoom = Math.min(Math.max(newZoom, 0.8), 5);
+                    if (newZoom !== currentZoom) {
+                        currentZoom = newZoom;
+                        applyZoomAndPosition();
+                    }
                 }
+            } else if (e.touches.length === 1 && isPanning && currentZoom > 1) {
+                e.preventDefault();
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                zoomViewport.scrollLeft = startX - (touchX - zoomViewport.scrollLeft);
+                zoomViewport.scrollTop = startY - (touchY - zoomViewport.scrollTop);
             }
         });
         
-        // Roda do mouse para PC
+        zoomViewport.addEventListener('touchend', (e) => {
+            isPanning = false;
+            initialDistance = 0;
+        });
+        
+        // ZOOM COM RODA DO MOUSE (PC)
         zoomViewport.addEventListener('wheel', (e) => {
             if (zoomModal.style.display === 'flex') {
                 e.preventDefault();
                 const delta = e.deltaY > 0 ? -0.1 : 0.1;
-                let newScale = currentZoomScale + delta;
-                newScale = Math.min(Math.max(newScale, 0.8), 4);
-                if (newScale !== currentZoomScale) {
-                    currentZoomScale = newScale;
-                    applyZoomScale();
+                let newZoom = currentZoom + delta;
+                newZoom = Math.min(Math.max(newZoom, 0.8), 5);
+                if (newZoom !== currentZoom) {
+                    currentZoom = newZoom;
+                    applyZoomAndPosition();
                 }
             }
         });
         
-        // Reset ao clicar no botão
+        // Arrastar com mouse (PC)
+        let mouseDown = false;
+        let mouseStartX = 0, mouseStartY = 0;
+        let scrollStartLeft = 0, scrollStartTop = 0;
+        
+        zoomViewport.addEventListener('mousedown', (e) => {
+            if (currentZoom > 1) {
+                mouseDown = true;
+                mouseStartX = e.clientX;
+                mouseStartY = e.clientY;
+                scrollStartLeft = zoomViewport.scrollLeft;
+                scrollStartTop = zoomViewport.scrollTop;
+                zoomViewport.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+        });
+        
+        window.addEventListener('mousemove', (e) => {
+            if (mouseDown && currentZoom > 1) {
+                const dx = e.clientX - mouseStartX;
+                const dy = e.clientY - mouseStartY;
+                zoomViewport.scrollLeft = scrollStartLeft - dx;
+                zoomViewport.scrollTop = scrollStartTop - dy;
+                e.preventDefault();
+            }
+        });
+        
+        window.addEventListener('mouseup', () => {
+            mouseDown = false;
+            zoomViewport.style.cursor = 'grab';
+        });
+        
+        zoomViewport.style.cursor = 'grab';
+        
+        // Reset zoom
         zoomResetBtn.addEventListener('click', resetZoom);
     }
     
-    // Abrir zoom ao clicar nas imagens do catálogo
+    // Abrir zoom ao clicar na imagem
     function handleImageClick(e) {
         if (!isOpen) return;
         const targetImg = e.target.closest('.page-inner')?.querySelector('img');
@@ -720,18 +743,13 @@
                 rightImg.src = (newRight <= TOTAL_PHOTOS) ? getImageUrl(newRight) : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Crect width='2' height='2' fill='%23111111'/%3E%3C/svg%3E";
                 currentIndex = newIndex;
             }, 220);
-            setTimeout(() => {
-                pageRight.classList.remove('flipping');
-                isAnimating = false;
-                if (pendingNext) { pendingNext = false; animateNextPage(); }
-            }, 480);
+            setTimeout(() => { pageRight.classList.remove('flipping'); isAnimating = false; if (pendingNext) { pendingNext = false; animateNextPage(); } }, 480);
         }
     }
     
     function animatePrevPage() {
         if (isAnimating) return;
-        let canGoBack = currentIndex > 1;
-        if (!canGoBack) { triggerEdgeEffect(); return; }
+        if (currentIndex <= 1) { triggerEdgeEffect(); return; }
         isAnimating = true;
         if (isMobile) {
             const currentPageDiv = pageLeft;
@@ -770,10 +788,7 @@
     
     function triggerEdgeEffect() {
         const container = document.querySelector('.book-container');
-        if (container) {
-            container.style.transform = 'translateX(4px)';
-            setTimeout(() => { if(container) container.style.transform = ''; }, 120);
-        }
+        if (container) { container.style.transform = 'translateX(4px)'; setTimeout(() => { if(container) container.style.transform = ''; }, 120); }
     }
     
     function nextPage() { if (!isOpen || isAnimating) { if (isAnimating) pendingNext = true; return; } animateNextPage(); }
@@ -822,7 +837,6 @@
     fullscreenBtn.addEventListener('click', toggleFullscreen);
     bookEl.addEventListener('click', handleImageClick);
     
-    // Fechar modal
     zoomCloseModalBtn.addEventListener('click', closeZoomModal);
     zoomModal.addEventListener('click', (e) => { if (e.target === zoomModal) closeZoomModal(); });
     
@@ -861,9 +875,9 @@
     if (isMobile && pageRight) pageRight.style.display = 'none';
     else if (!isMobile && pageRight) pageRight.style.display = 'block';
     
-    // Inicializar zoom com pinch
-    setupZoomGestures();
-    console.log("Catálogo com zoom por dois dedos/mouse rodando!");
+    // Inicializar zoom
+    setupZoomFeatures();
+    console.log("Catálogo com zoom e arrastar funcionando!");
 </script>
 </body>
 </html>
